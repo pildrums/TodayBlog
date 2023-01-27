@@ -7,9 +7,10 @@
     "lib": ["ES5", "ES6"],
     "sourceMap": true,
     "outDir": "./dist",
-    "strict": true,
+    "strict": false,
     "baseUrl": "./",
     "esModuleInterop": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "downlevelIteration": true
   }
 }

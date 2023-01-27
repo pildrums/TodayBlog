@@ -3,7 +3,10 @@ import bodyParser from "koa-bodyparser";
 import Router from "koa-router";
 import api from "./api";
 import mongoose from "mongoose";
-require("dotenv").config();
+import dotenv from "dotenv";
+import createFakeData from "./createFakeData";
+
+dotenv.config();
 
 const { PORT, MONGO_URI } = process.env;
 

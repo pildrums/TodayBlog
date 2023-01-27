@@ -28,6 +28,7 @@ export const list = (ctx: any) => {
 // 특정 포스트 조회
 export const read = (ctx: any) => {
   const { id } = ctx.params; // 문자열
+  // 해당 id를 가진 포스트 조회
   const post = posts.find((p) => p.id.toString() === id);
   if (!post) {
     ctx.status = 404;

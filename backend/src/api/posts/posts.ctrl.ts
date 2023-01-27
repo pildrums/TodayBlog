@@ -1,4 +1,16 @@
+import mongoose from "mongoose";
 import Post from "../../models/post";
+
+const { ObjectId } = mongoose.Types;
+
+export const checkObjectId = (ctx: any, next: any) => {
+  const { id } = ctx.params;
+  if (!ObjectId.isValid(id)) {
+    ctx.status = 400;
+    return;
+  }
+  return next();
+};
 
 /*
   POST api/posts

@@ -80,6 +80,12 @@ export const list = async (ctx) => {
     return;
   }
 
+  const { tag, username } = ctx.query;
+  const query = {
+    ...(username ? { "user.username": username } : {}),
+    ...(tag ? { tags: tag } : {}),
+  };
+
   try {
     // exec(): 서버에 쿼리 요청
     const posts = await Post.find()

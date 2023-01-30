@@ -4,7 +4,6 @@ import Router from "koa-router";
 import api from "./api";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import createFakeData from "./createFakeData";
 
 dotenv.config();
 

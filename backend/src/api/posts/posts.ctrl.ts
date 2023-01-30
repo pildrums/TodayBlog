@@ -4,10 +4,29 @@ import Post from "../../models/post";
 
 const { ObjectId } = mongoose.Types;
 
-export const checkObjectId = (ctx: any, next: any) => {
+export const getPostById = async (ctx, next) => {
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
     ctx.status = 400;
+    return;
+  }
+  try {
+    const post = await Post.findById(id);
+    if (!post) {
+      ctx.status = 404; // Not found
+      return;
+    }
+    ctx.state.post = post;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+  return next();
+};
+
+export const checkOwnPost = (ctx, next) => {
+  const { user, post } = ctx.state;
+  if (post.user._id.toString() !== user._id) {
+    ctx.status = 403;
     return;
   }
   return next();
@@ -22,7 +41,7 @@ export const checkObjectId = (ctx: any, next: any) => {
   }
   함수는 promise를 반환해야 하므로 함수는 async/await 문법 사용
 */
-export const write = async (ctx: any) => {
+export const write = async (ctx) => {
   const schema = Joi.object().keys({
     title: Joi.string().required(),
     body: Joi.string().required(),
@@ -41,6 +60,7 @@ export const write = async (ctx: any) => {
     title,
     body,
     tags,
+    user: ctx.state.user,
   });
   // await는 무조건 try/catch 문으로 오류처리 해야 함
   try {
@@ -52,7 +72,7 @@ export const write = async (ctx: any) => {
   }
 };
 
-export const list = async (ctx: any) => {
+export const list = async (ctx) => {
   const page = parseInt(ctx.query.page || "1", 10);
 
   if (page < 1) {
@@ -70,32 +90,20 @@ export const list = async (ctx: any) => {
       .exec();
     const postCount = await Post.countDocuments().exec();
     ctx.set("Last-Page", Math.ceil(postCount / 10));
-    ctx.body = posts
-      .map((post) => ({
-        ...post,
-        body:
-          post.body?.length < 200 ? post.body : `${post.body?.slice(0, 200)}`,
-      }));
+    ctx.body = posts.map((post) => ({
+      ...post,
+      body: post.body?.length < 200 ? post.body : `${post.body?.slice(0, 200)}`,
+    }));
   } catch (e) {
     ctx.throw(500, e);
   }
 };
 
-export const read = async (ctx: any) => {
-  const { id } = ctx.params;
-  try {
-    const post = await Post.findById(id).exec();
-    if (!post) {
-      ctx.status = 404;
-      return;
-    }
-    ctx.body = post;
-  } catch (e) {
-    ctx.throw(500, e);
-  }
+export const read = (ctx) => {
+  ctx.body = ctx.state.post;
 };
 
-export const remove = async (ctx: any) => {
+export const remove = async (ctx) => {
   const { id } = ctx.params;
   try {
     await Post.findByIdAndRemove(id).exec();
@@ -105,7 +113,7 @@ export const remove = async (ctx: any) => {
   }
 };
 
-export const update = async (ctx: any) => {
+export const update = async (ctx) => {
   const { id } = ctx.params;
   const schema = Joi.object().keys({
     title: Joi.string(),

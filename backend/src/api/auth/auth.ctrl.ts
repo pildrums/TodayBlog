@@ -76,6 +76,16 @@ export const login = async (ctx) => {
   }
 };
 
-export const check = async (ctx) => {};
+export const check = async (ctx) => {
+  const { user } = ctx.state;
+  if (!user) {
+    ctx.status = 401; // Unauthorized
+    return;
+  }
+  ctx.body = user;
+};
 
-export const logout = async (ctx) => {};
+export const logout = async (ctx) => {
+  ctx.cookies.set("access_token");
+  ctx.status = 204; // No Contents
+};

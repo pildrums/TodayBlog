@@ -1,12 +1,24 @@
 import mongoose, { Schema } from "mongoose";
 
-const PostSchema = new Schema({
+interface IPostSchema extends Schema {
+  title: string;
+  body: string;
+  tags: string[];
+  publishedDate: {};
+  user: {};
+}
+
+const PostSchema = new Schema<IPostSchema>({
   title: String,
   body: String,
   tags: [String],
   publishedDate: {
     type: Date,
     default: Date.now,
+  },
+  user: {
+    _id: mongoose.Types.ObjectId,
+    username: String,
   },
 });
 

@@ -1,27 +1,69 @@
 import Link from "next/link";
+import { ChangeEvent } from "react";
 import styled from "styled-components";
 import Button from "../common/Button";
 
-function AuthForm() {
+interface IAuthFormProps {
+  type: string;
+  onSubmit: (event: ChangeEvent<HTMLFormElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  form: {
+    username: string;
+    password: string;
+    passwordConfirm: string;
+  };
+}
+
+interface ITextMap {
+  [key: string]: string;
+}
+
+const textMap: ITextMap = {
+  login: "로그인",
+  register: "회원가입",
+};
+
+function AuthForm({ type, onChange, onSubmit, form }: IAuthFormProps) {
+  const text = textMap[type];
   return (
     <AuthFormBlock>
-      <h3>로그인</h3>
-      <form>
+      <h3>{text}</h3>
+      <form onSubmit={onSubmit}>
         <StyledInput
           autoComplete="username"
           name="username"
           placeholder="아이디"
+          onChange={onChange}
+          value={form.username}
         />
         <StyledInput
-          autoComplete="password"
+          autoComplete="new-password"
           name="password"
           placeholder="패스워드"
           type="password"
+          onChange={onChange}
+          value={form.password}
         />
-        <Button>로그인</Button>
+        {type === "register" && (
+          <StyledInput
+            autoComplete="new-password"
+            name="passwordConfirm"
+            placeholder="패스워드 확인"
+            type="password"
+            onChange={onChange}
+            value={form.passwordConfirm}
+          />
+        )}
+        <ButtonWithMarginTop cyan fullWidth>
+          {text}
+        </ButtonWithMarginTop>
       </form>
       <Footer>
-        <Link href="/register">회원가입</Link>
+        {type === "login" ? (
+          <Link href="/register">회원가입</Link>
+        ) : (
+          <Link href="/login">로그인</Link>
+        )}
       </Footer>
     </AuthFormBlock>
   );
@@ -49,6 +91,10 @@ const StyledInput = styled.input`
   & + & {
     margin-top: 1rem;
   }
+`;
+
+const ButtonWithMarginTop = styled(Button)`
+  margin-top: 1rem;
 `;
 
 const Footer = styled.div`

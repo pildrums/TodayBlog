@@ -1,12 +1,12 @@
-import AuthForm from "@/components/auth/AuthForm";
 import AuthTemplate from "@/components/auth/AuthTemplate";
+import LoginForm from "@/containers/auth/LoginForm";
 
-function Login() {
+function LoginPage() {
   return (
     <AuthTemplate>
-      <AuthForm />
+      <LoginForm />
     </AuthTemplate>
   );
 }
 
-export default Login;
+export default LoginPage;

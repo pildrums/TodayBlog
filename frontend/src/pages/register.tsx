@@ -1,12 +1,12 @@
-import AuthForm from "@/components/auth/AuthForm";
 import AuthTemplate from "@/components/auth/AuthTemplate";
+import RegisterForm from "@/containers/auth/RegisterForm";
 
-function Register() {
+function RegisterPage() {
   return (
     <AuthTemplate>
-      <AuthForm />
+      <RegisterForm />
     </AuthTemplate>
   );
 }
 
-export default Register;
+export default RegisterPage;

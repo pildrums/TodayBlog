@@ -1,15 +1,21 @@
-import { getLoginAsync } from "@/modules/auth";
 import { finishLoading, startLoading } from "@/modules/loading";
+import { AxiosResponse } from "axios";
 import { call, put } from "redux-saga/effects";
 
-export default function createRequestSaga(type: ReturnType<typeof getLoginAsync>, request) {
+export const createRequestActionTypes = (type: string) => {
+  const SUCCESS = `${type}_SUCCESS`;
+  const FAILURE = `${type}_FAILURE`;
+  return [type, SUCCESS, FAILURE];
+};
+
+export default function createRequestSaga(type: string, request: any) {
   const SUCCESS = `${type}_SUCCESS`;
   const FAILURE = `${type}_FAILURE`;
 
-  return function* (action) {
+  return function* (action: any) {
     yield put(startLoading(type));
     try {
-      const response = yield call(request, action.payload);
+      const response: AxiosResponse = yield call(request, action.payload);
       yield put({
         type: SUCCESS,
         payload: response.data,
@@ -21,6 +27,5 @@ export default function createRequestSaga(type: ReturnType<typeof getLoginAsync>
         error: true,
       });
     }
-    yield put(finishLoading(type));
   };
 }
